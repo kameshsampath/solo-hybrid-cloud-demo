@@ -40,3 +40,16 @@ package*
 node_modules
 .firebaserc
 .firebase
+
+# Setup files
+/setup/**
+!/setup/project/cloud-1.yml
+!/setup/project/cloud-2.yml
+!/setup/project/cloud-3.yml
+!/setup//project/run.sh
+!/setup/env/*.example
+!/setup/hack.sh
+!/setup/README.md
+
+.tool-versions
+
