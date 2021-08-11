@@ -4,26 +4,195 @@ include::_attributes.adoc[]
 [#prerequisite]
 == Prerequisite CLI tools
 
-include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-common/master/prerequisites-kubernetes.adoc[]
+The following CLI tools are required for running the exercises in this tutorial. 
+Please have them installed and configured before you get started with any of the tutorial chapters.
+
+[cols="4*^,4*.",options="header,+attributes"]
+|===
+|**Tool**|**macOS**|**Fedora**|**windows**
+
+| `Git`
+| https://git-scm.com/download/mac[Download]
+| https://git-scm.com/download/linux[Download]
+| https://git-scm.com/download/win[Download]
+
+| `Docker`
+| https://docs.docker.com/docker-for-mac/install[Docker for Mac]
+| `dnf install docker`
+| https://docs.docker.com/docker-for-windows/install[Docker for Windows]
+
+| `kubectl {kubernetes-version}`
+| https://storage.googleapis.com/kubernetes-release/release/{kubernetes-version}/bin/darwin/amd64/kubectl[Download]
+| https://storage.googleapis.com/kubernetes-release/release/{kubernetes-version}/bin/linux/amd64/kubectl[Download]
+| https://storage.googleapis.com/kubernetes-release/release/{kubernetes-version}/bin/windows/amd64/kubectl.exe[Download]
+
+| https://github.com/wercker/stern[stern]
+| `brew install stern`
+| https://github.com/wercker/stern/releases/download/1.11.0/stern_linux_amd64[Download]
+| https://github.com/wercker/stern/releases/download/1.11.0/stern_windows_amd64.exe[Download]
+
 |===
 
-include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-common/master/optional-requisites.adoc[]
+The following CLI tools are optional for running the exercises in this tutorial.
+Although they are used in the tutorial, you could use others without any problem.
+
+[cols="4*^,4*.",options="header,+attributes"]
+|===
+|**Tool**|**macOS**|**Fedora**|**windows**
+
+| https://github.com/mikefarah/yq[yq v2.4.1]
+| https://github.com/mikefarah/yq/releases/download/2.4.1/yq_darwin_amd64[Download]
+| https://github.com/mikefarah/yq/releases/download/2.4.1/yq_linux_amd64[Download]
+| https://github.com/mikefarah/yq/releases/download/2.4.1/yq_windows_amd64.exe[Download]
+
+| https://github.com/stedolan/jq[jq v1.6.0]
+| https://github.com/stedolan/jq/releases/download/jq-1.6/jq-osx-amd64[Download]
+| https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64[Download]
+| https://github.com/stedolan/jq/releases/download/jq-1.6/jq-win64.exe[Download]
+
+| https://httpie.org/[httpie]
+| `brew install httpie`
+| `dnf install httpie`
+| https://httpie.org/doc#windows-etc
+
+| watch
+| `brew install watch`
+| `dnf install procps-ng`
+|
+
+| kubectx and kubens
+| `brew install kubectx`
+| https://github.com/ahmetb/kubectx
+|
+
+| https://github.com/rakyll/hey[hey]
+| `brew install hey`
+| https://storage.googleapis.com/jblabs/dist/hey_linux_v0.1.2[Download]
+| https://storage.googleapis.com/jblabs/dist/hey_win_v0.1.2.exe[Download]
 |===
 
-[#minikube]
+[#k8s]
 == Setup Kubernetes
 
-:profile: my_profile
+We need three Kubernetes clusters to run this demo, we could have Kubernetes clusters via:
 
-include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-common/master/kubernetes-setup.adoc[]
+- https://aws.amazon.com/eks[EKS]
+- https://cloud.google.com/kubernetes-engine[GKE]
+- https://azure.microsoft.com/en-in/services/kubernetes-service/[AKS]
+- http://try.openshift.com[OpenShift]
+- https://civo.com[Civo]
 
-And then you are ready for start using Kubernetes:
+Once we have three kubernetes clusters ready, we are good to start setting up the demo.
 
-image::kubelogo.png[]
+[#cloud-and-components]
+=== Clouds and Components
+
+Assuming that we have GKE as `cloud-1`, EKS as `cloud-2` and AKS as `cloud-3`, the following table shows the cloud and what components gets installed on each of them.
+
+:cloud-1: GKE
+:cloud-2: EKS
+:cloud-3: AKS
+[cols="<2,^1,^1,^1", options="header"]
+|===
+| Component | Cloud-1  |  Cloud-2 | Cloud-3
+| Cloud Provider  | {cloud-1}  |  {cloud-2} | {cloud-3}
+| Gloo Edge | &#x2713;  | &#x2713;  | &#x2713;
+| Istio     | &#x2713;  | &#x2713;  | &#x2713;
+| Backend   | &#x2713;  | &#x2713;  | &#x2713;
+| Frontend  | &#x2713;  | &#x2713;  | &#x2713;
+| UI        | &#x2713;  | &#x274C; | &#x274C;
+|===
+
+[#istio-gloo]
+== Setup Istio and Gloo
+
+We need to setup Gloo and Istio on all the three clouds, to do that seamlessly we will be using the ansible scripts that are available as part of the link:./cluster[cluster] directory of this project repository.
 
 [#downloadtutorial]
-== Get tutorial sources
+== Download Sources
 
-:tutorial-url: https://github.com/redhat-developer-demos/rhd-tutorial-common.git
-:folder: my_folder
-include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-common/master/download-sources.adoc[]
+The demo applications are three different microservices. They are hosted in their own repositories. The following section details how to download them,
+
+=== Demo Setup
+
+The demo base repository is where the setup scripts and documentation are located. Clone the repository as shown:
+
+:tutorial-url: https://github.com/kameshsampath/solo-hybrid-cloud-demo.git
+:folder: solo-hybrid-cloud-demo
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+git clone {tutorial-url} {folder}
+----
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+export PROJECT_HOME="$(pwd)/{folder}"#<.>
+----
+<.> We will refer to this project flder as `$PROJECT_HOME`
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+cd $PROJECT_HOME
+----
+
+=== Backend API 
+
+The backend API is a simple microservice that processes the message from front end and applies transformations based on the request attributes. Clone the repository as shown:
+
+:tutorial-url: https://github.com/kameshsampath/hybrid-cloud-backend-api.git
+:folder: hybrid-cloud-backend-api
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+git clone {tutorial-url} {folder}
+----
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+export BACKEND_API_HOME="$(pwd)/{folder}"#<.>
+----
+<.> We will refer to this project flder as `$BACKEND_API_HOME`
+
+
+=== Front API
+
+The front API is a simple microservice that acts as an interface between the UI and backend service. Clone the repository as shown:
+
+:tutorial-url: https://github.com/kameshsampath/hybrid-cloud-frontend-api.git
+:folder: hybrid-cloud-frontend-api
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+git clone {tutorial-url} {folder}
+----
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+export FRONTEND_API_HOME="$(pwd)/{folder}"#<.>
+----
+<.> We will refer to this project flder as `$FRONTEND_API_HOME`
+
+=== UI
+
+The UI is a react js based Single Page Application which allows users to interact with the API.Clone the repository as shown:
+
+:tutorial-url: https://github.com/kameshsampath/hybrid-cloud-ui.git
+:folder: hybrid-cloud-ui
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+git clone {tutorial-url} {folder}
+----
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+export UI_HOME="$(pwd)/{folder}"#<.>
+----
+<.> We will refer to this project flder as `$UI_HOME`
+

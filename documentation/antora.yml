@@ -1,5 +1,5 @@
-name: template-tutorial
-title: Template Tutorial
+name: hybrid-cloud-demo
+title: Gloo Hybrid Cloud Demo
 version: master
 nav:
   - modules/ROOT/nav.adoc
