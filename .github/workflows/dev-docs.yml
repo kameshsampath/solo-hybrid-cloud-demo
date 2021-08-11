@@ -1,4 +1,4 @@
-name: docs
+name: Dev Docs
 
 on:
   push:
@@ -18,11 +18,6 @@ jobs:
         uses: kameshsampath/antora-site-action@master
         with:
           antora_playbook: site.yml
-      - name: "Upload generated site"
-        uses: actions/upload-artifact@v1.0.0
-        with:
-          name: site
-          path: "${{ github.workspace }}/${{ env.SITE_DIR }}"
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@3.2.1
         with:
