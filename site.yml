@@ -2,32 +2,34 @@ runtime:
   cache_dir: ./.cache/antora
 
 site:
-  title: Gloo Hybrid Cloud Demo
-  url: https://kameshsampath.github.io/solo-hybrid-cloud-demo
+  title: Hybrid Cloud Demo
+  url: https://kameshsampath.github.com.io/solo-hybrid-cloud-demo
   start_page: hybrid-cloud-demo::index.adoc
 
 content:
   sources:
-    - url: ./
+    - url: https://github.com/kameshsampath/solo-hybrid-cloud-demo
+      branches: [gloo-edge, gloo-mesh]
       start_path: documentation
-
 asciidoc:
   attributes:
-    release-version: master
+    branch: gloo-edge
+    kubernetes-version: v1.21.0
+    gloo-edge: true
+    gloo-edge-version: v1.8.6
+    gloo-mesh-ee-version: v1.8.6
     page-pagination: true
   extensions:
-    - ./lib/tab-block.js
     - ./lib/remote-include-processor.js
-
+    - ./lib/tab-block.js
 ui:
   bundle:
-    url: https://github.com/kameshsampath/solo-demo-docs-ui/releases/download/v0.1.4/ui-bundle.zip
+    url: https://github.com/kameshsampath/solo-demo-docs-ui/releases/download/v0.1.5/ui-bundle.zip
     snapshot: true
   supplemental_files:
     - path: ./supplemental-ui
     - path: .nojekyll
     - path: ui.yml
       contents: "static_files: [ .nojekyll ]"
-
 output:
   dir: ./gh-pages
