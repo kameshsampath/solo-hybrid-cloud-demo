@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Setup Gloo Mesh and Components :: Hybrid Cloud Demo</title>
+    <link rel="canonical" href="https://kameshsampath.github.com.io/solo-hybrid-cloud-demo/hybrid-cloud-demo/mesh/setup_mesh.html">
+    <link rel="prev" href="index.html">
+    <link rel="next" href="deploy.html">
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="icon" href="https://www.solo.io/wp-content/uploads/2019/10/solo-favicon.png" sizes="32x32">
+<link rel="icon" href="https://www.solo.io/wp-content/uploads/2019/10/solo-favicon.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.solo.io/wp-content/uploads/2019/10/solo-favicon.png">
+<meta name="msapplication-TileImage" content="https://www.solo.io/wp-content/uploads/2019/10/solo-favicon.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://solo.io" target="_blank"><img src="../../_/img/header_logo.png"
+          height="40px" alt="Solo.io"></a>
+      <a class="navbar-item title" href="https://kameshsampath.github.com.io/solo-hybrid-cloud-demo">Hybrid Cloud Demo</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="hybrid-cloud-demo" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html" class=" query-params-link">Gloo Hybrid Cloud Demo</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../setup.html">1. Setup</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../setup.html#prerequisite">Prerequisites</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../setup.html#k8s">Setup Kubernetes Cluster</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../setup_k8s_aws.html">EKS Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../setup_k8s_azure.html">AKS Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../setup_k3s_civo.html">CIVO Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../setup_k8s_gke.html">GKE Cluster</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Gloo Mesh</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="setup_mesh.html">Setup</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#install-mesh">Deploy Gloo Mesh</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#register-clusters">Register Clusters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#install-istio">Deploy Istio</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="deploy.html">Application Deployment</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="deploy.html#deploy-backend">Backend Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="deploy.html#deploy-frontend">Frontend Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="deploy.html#deploy-virtual-gateway">Virtual Gateway</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="deploy.html#deploy-ui">UI</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Gloo Hybrid Cloud Demo</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Gloo Hybrid Cloud Demo</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Gloo Hybrid Cloud Demo</a></li>
+    <li><a href="index.html">Gloo Mesh</a></li>
+    <li><a href="setup_mesh.html">Setup</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/kameshsampath/solo-hybrid-cloud-demo/edit/gloo-mesh/documentation/modules/mesh/pages/setup_mesh.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Setup Gloo Mesh and Components</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>At the end of this chapter you would have</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Installed Gloo Mesh Enterprise</p>
+</li>
+<li>
+<p>Registered Clusters</p>
+</li>
+<li>
+<p>Installed Istio on to mesh clusters</p>
+</li>
+<li>
+<p>Created Virtual Mesh</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pre_requsites"><a class="anchor" href="#_pre_requsites"></a>Pre-requsites</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>You have setup three Kubernetes clusters one for each Management and two meshes</p>
+</li>
+<li>
+<p>You Gloo Mesh Enterprise license key</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mesh-environment-variables"><a class="anchor" href="#mesh-environment-variables"></a>Environment variables</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For a easier and smoother setup, lets define few environment variables that we will refer in the upcoming sections and chapters.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export GLOO_MESH_LICENSE_KEY=&lt;your gloo mesh enterprise license key&gt;<i class="conum" data-value="1"></i><b>(1)</b>
+export MGMT=&lt;your management server name&gt;<i class="conum" data-value="2"></i><b>(2)</b>
+export CLUSTER1=&lt;your mesh with istio cluster 1&gt;<i class="conum" data-value="3"></i><b>(3)</b>
+export CLUSTER2=&lt;your mesh with istio cluster 2&gt;<i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The Gloo Mesh License Key</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The Kubenretes cluster which will be used Gloo Management Cluster</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The Kubenretes cluster which will be used Gloo Mesh Cluster i.e. where workload will be deployed</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The Kubenretes cluster which will be used Gloo Mesh Cluster i.e. where workload will be deployed</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The cluster mapping are done based on <a href="../setup.html#cloud-and-components" class="page">Cloud Components</a>. Adjust as per your cluster setup.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="install-mesh"><a class="anchor" href="#install-mesh"></a>Install Gloo Mesh</h2>
+<div class="sectionbody">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">meshctl install enterprise \
+  --include-rbac \
+  --license $GLOO_MESH_LICENSE_KEY \
+  --kubecontext $MGMT
+  --version v1.1.0-beta29</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wait for enterprise networking to be ready</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context "${MGMT}" \
+  -n gloo-mesh rollout status deploy/enterprise-networking</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">"Hello World"</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="register-clusters"><a class="anchor" href="#register-clusters"></a>Cluster Registrations</h2>
+<div class="sectionbody">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export MGMT_INGRESS_ADDRESS=$(kubectl --context=$MGMT get svc -n gloo-mesh enterprise-networking -o jsonpath='{.status.loadBalancer.ingress[0].ip}')</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export MGMT_INGRESS_PORT=$(kubectl --context=$MGMT -n gloo-mesh get service enterprise-networking -o jsonpath='{.spec.ports[?(@.name=="grpc")].port}')</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export RELAY_ADDRESS="${MGMT_INGRESS_ADDRESS}:${MGMT_INGRESS_PORT}"</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="register-cluster-1"><a class="anchor" href="#register-cluster-1"></a>Cluster 1</h3>
+<div class="paragraph">
+<p>Set a name for the cluster that is to be registered:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export CLUSTER_NAME='cluster-1'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Register it,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">meshctl cluster register enterprise --mgmt-context="$MGMT" \
+  --remote-context="$CLUSTER1" \
+  --relay-server-address "$RELAY_ADDRESS" \
+  "$CLUSTER_NAME" \
+  --cluster-domain cluster.local</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">"Hello World"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_cluster_2"><a class="anchor" href="#_cluster_2"></a>Cluster 2</h3>
+<div class="paragraph">
+<p>Set a name for the cluster that is to be registered:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export CLUSTER_NAME='cluster-2'</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">meshctl cluster register enterprise --mgmt-context="$MGMT" \
+  --remote-context="$CLUSTER2" \
+  --relay-server-address "$RELAY_ADDRESS" \
+  "$CLUSTER_NAME" \
+  --cluster-domain cluster.local</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">"Hello World"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Check the status of the agents</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">meshctl check server</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Gloo Mesh Management Cluster Installation
+--------------------------------------------
+
+🟢 Gloo Mesh Pods Status
++-----------+------------+-------------------------------+-----------------+
+|  CLUSTER  | REGISTERED | DASHBOARDS AND AGENTS PULLING | AGENTS PUSHING  |
++-----------+------------+-------------------------------+-----------------+
+| cluster-1 | true       |                             2 |               1 |
++-----------+------------+-------------------------------+-----------------+
+| cluster-2 | true       |                             2 |               1 |
++-----------+------------+-------------------------------+-----------------+
+
+🟢 Gloo Mesh Agents Connectivity
+
+Management Configuration
+---------------------------
+2021-08-12T10:22:53.791937Z     info    klog    apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+
+🟢 Gloo Mesh CRD Versions
+
+🟢 Gloo Mesh Networking Configuration Resources</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="install-istio"><a class="anchor" href="#install-istio"></a>Install Istio</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Install Istio on to the cluster <code>cluster-1</code>:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">istioctl --context $CLUSTER1 operator init
+CLUSTER_NAME='cluster-1' envsubst < <a href="https://github.com/kameshsampath/solo-hybrid-cloud-demo/blob/gloo-mesh/setup/config/mesh/istio-cr.yaml" target="_blank" rel="noopener">$DEMO_HOME/config/istio-cr.yaml</a> | istioctl manifest install -y --context $CLUSTER1 -f -</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Check and verify the install:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">istioctl verify-install --context=$CLUSTER1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Install Istio on to the cluster <code>cluster-2</code>:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">istioctl --context $CLUSTER2 operator init
+CLUSTER_NAME='cluster-2' envsubst < <a href="https://github.com/kameshsampath/solo-hybrid-cloud-demo/blob/gloo-mesh/setup/config/mesh/istio-cr.yaml" target="_blank" rel="noopener">$DEMO_HOME/config/istio-cr.yaml</a> | istioctl manifest install -y --context $CLUSTER2 -f -</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Check and verify the install:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">istioctl verify-install --context=$CLUSTER2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After setup steps, the mesh dashboard should look like,</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/cluster_reg_success.png" alt="Mesh Dashboard">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="update-admin-role"><a class="anchor" href="#update-admin-role"></a>Update <code>admin-role</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Patch the <code>admin-role</code> to allow all users of <code>system:masters</code> Group (Kube Admins)</p>
+</div>
+<div class="listingblock console-input">
+<div class="title"><a href="https://github.com/kameshsampath/solo-hybrid-cloud-demo/blob/gloo-mesh/setup/config/mesh/rolebinding-patch.yaml" target="_blank" rel="noopener">$DEMO_HOME/config/rolebinding-patch.yaml</a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context ${MGMT} -n gloo-mesh patch rolebindings.rbac.enterprise.mesh.gloo.solo.io admin-role-binding --type=merge --patch "$(cat <a href="https://github.com/kameshsampath/solo-hybrid-cloud-demo/blob/gloo-mesh/setup/config/mesh/rolebinding-patch.yaml">$DEMO_HOME/config/rolebinding-patch.yaml</a>)"</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="enable-mtls"><a class="anchor" href="#enable-mtls"></a>Enable mTLS between clusters</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>On each mesh cluster where you have installed <code>istio</code> run the following manifest to enable <code>mTLS</code>,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context=$CLUSTER1 apply -f <a href="https://github.com/kameshsampath/solo-hybrid-cloud-demo/blob/gloo-mesh/setup/config/mesh/peer-auth.yaml">$DEMO_HOME/config/peer-auth.yaml</a>
+kubectl --context==$CLUSTER2 apply -f <a href="https://github.com/kameshsampath/solo-hybrid-cloud-demo/blob/gloo-mesh/setup/config/mesh/peer-auth.yaml">$DEMO_HOME/config/peer-auth.yaml</a></code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="create-virtual-mesh"><a class="anchor" href="#create-virtual-mesh"></a>Create Virtual Mesh</h3>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export MESHES=$(kubectl --context=$MGMT get meshes -n gloo-mesh -o yaml | yq eval '.items[].metadata|[{"name": .name,"namespace": .namespace}]' -)
+yq eval -P  '.spec.meshes = env(MESHES)' <a href="https://github.com/kameshsampath/solo-hybrid-cloud-demo/blob/gloo-mesh/setup/config/mesh/peer-auth.yaml">$DEMO_HOME/config/virtual-mesh-template.yaml</a> > $DEMO_HOME/config/virtual-mesh.yaml</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context=$MGMT apply -f $DEMO_HOME/config/virtual-mesh.yaml</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="check-whats-created"><a class="anchor" href="#check-whats-created"></a>Check what is created so far</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="meshes"><a class="anchor" href="#meshes"></a>Meshes</h3>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context=$MGMT get meshes -n gloo-mesh</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                            AGE
+istiod-istio-system-cluster-1   6m7s
+istiod-istio-system-cluster-2   3m38s</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="mesh-kube-clusters"><a class="anchor" href="#mesh-kube-clusters"></a>Kubernetes Clusters</h3>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context=$MGMT get kubernetesclusters -n gloo-mesh</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME        AGE
+cluster-1   15m
+cluster-2   11m</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html" class="query-params-link">Gloo Mesh</a></span>
+  <span class="next"><a href="deploy.html" class="query-params-link">Application Deployment</a></span>
+</nav>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <a class="rhd-logo" href="https://developers.redhat.com" target="_blank"></div>
+</footer>
+<script src="../../_/js/vendor/clipboard.js"></script>
+<script src="../../_/js/site.js"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
