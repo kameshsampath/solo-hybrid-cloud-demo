@@ -3,12 +3,12 @@ runtime:
 
 site:
   title: Hybrid Cloud Demo
-  url: http://kameshsampath.github.com.io/solo-hybrid-cloud-demo
+  url: https://kameshsampath.github.com.io/solo-hybrid-cloud-demo
   start_page: hybrid-cloud-demo::index.adoc
 
 content:
   sources:
-    - url: http://github.com/kameshsampath/solo-hybrid-cloud-demo
+    - url: https://github.com/kameshsampath/solo-hybrid-cloud-demo
       branches: [gloo-mesh]
       start_path: documentation
 asciidoc:
