@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Deploy Applications :: Hybrid Cloud Demo</title>
+    <link rel="canonical" href="https://kameshsampath.github.com.io/solo-hybrid-cloud-demo/hybrid-cloud-demo/gloo-mesh/mesh/deploy.html">
+    <link rel="prev" href="setup_mesh.html">
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="icon" href="https://www.solo.io/wp-content/uploads/2019/10/solo-favicon.png" sizes="32x32">
+<link rel="icon" href="https://www.solo.io/wp-content/uploads/2019/10/solo-favicon.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.solo.io/wp-content/uploads/2019/10/solo-favicon.png">
+<meta name="msapplication-TileImage" content="https://www.solo.io/wp-content/uploads/2019/10/solo-favicon.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://solo.io" target="_blank"><img src="../../../_/img/header_logo.png"
+          height="40px" alt="Solo.io"></a>
+      <a class="navbar-item title" href="https://kameshsampath.github.com.io/solo-hybrid-cloud-demo">Hybrid Cloud Demo</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="hybrid-cloud-demo" data-version="gloo-mesh">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html" class=" query-params-link">Gloo Hybrid Cloud Demo</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../setup.html">1. Setup</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../setup.html#prerequisite">Prerequisites</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../setup.html#k8s">Setup Kubernetes Cluster</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../setup_k8s_aws.html">EKS Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../setup_k8s_azure.html">AKS Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../setup_k3s_civo.html">CIVO Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../setup_k8s_gke.html">GKE Cluster</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Gloo Mesh</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="setup_mesh.html">Setup</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="setup_mesh.html#install-mesh">Deploy Gloo Mesh</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="setup_mesh.html#register-clusters">Register Clusters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="setup_mesh.html#install-istio">Deploy Istio</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="deploy.html">Application Deployment</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#deploy-backend">Backend Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#deploy-frontend">Frontend Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#deploy-virtual-gateway">Virtual Gateway</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#deploy-ui">UI</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Gloo Hybrid Cloud Demo</span>
+    <span class="version">gloo-mesh</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Gloo Hybrid Cloud Demo</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">gloo-mesh</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Gloo Hybrid Cloud Demo</a></li>
+    <li><a href="index.html">Gloo Mesh</a></li>
+    <li><a href="deploy.html">Application Deployment</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/kameshsampath/solo-hybrid-cloud-demo/edit/gloo-mesh/documentation/modules/mesh/pages/deploy.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Deploy Applications</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>At the end of this chapter you would have</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Deployed Backend API</p>
+</li>
+<li>
+<p>Frontend API</p>
+</li>
+<li>
+<p>Created Virutal Gateway</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pre_requsites"><a class="anchor" href="#_pre_requsites"></a>Pre-requsites</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>You have setup three Kubernetes clusters one for each Management and two meshes</p>
+</li>
+<li>
+<p>You deployed Gloo Mesh on the management cluster</p>
+</li>
+<li>
+<p>You have registered the mesh clusters with management cluster</p>
+</li>
+<li>
+<p>You have Istio installed on the mesh clusters</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="deploy-env-variables"><a class="anchor" href="#deploy-env-variables"></a>Environment variables</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For a easier and smoother setup, lets define few environment variables that we will refer in the upcoming sections and chapters.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export GLOO_MESH_LICENSE_KEY=&lt;your gloo mesh enterprise license key&gt;<i class="conum" data-value="1"></i><b>(1)</b>
+export MGMT=&lt;your management server name&gt;<i class="conum" data-value="2"></i><b>(2)</b>
+export CLUSTER1=&lt;your mesh with istio cluster 1&gt;<i class="conum" data-value="3"></i><b>(3)</b>
+export CLUSTER2=&lt;your mesh with istio cluster 2&gt;<i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The Gloo Mesh License Key</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The Kubenretes cluster which will be used Gloo Management Cluster</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The Kubenretes cluster which will be used Gloo Mesh Cluster i.e. where workload will be deployed</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The Kubenretes cluster which will be used Gloo Mesh Cluster i.e. where workload will be deployed</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The cluster mapping are done based on <a href="../setup.html#cloud-and-components" class="page">Cloud Components</a>. Adjust as per your cluster setup.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="deploy-backend"><a class="anchor" href="#deploy-backend"></a>Backend API</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The backend is simple REST API that processes the incoming message and applies some transformations like uppercase, reverse and returns the response with a cloud provider id such as <code>aws</code>,<code>gcp</code>,'civo','azure'.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The source of the backend API is available <a href="https://github.com/kameshsampath/hybrid-cloud-backend-api.git">here</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset1_aws"></a>AWS</p>
+</li>
+<li>
+<p><a id="tabset1_azure"></a>Azure</p>
+</li>
+<li>
+<p><a id="tabset1_civo"></a>Civo</p>
+</li>
+<li>
+<p><a id="tabset1_gcp"></a>GCP</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset1_aws">
+<div class="paragraph">
+<p>If you <code>CLUSTER-1</code> is <strong>AWS</strong> then,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export AWS=$CLUSTER1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you <code>CLUSTER-2</code> is <strong>AWS</strong> then,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export AWS=$CLUSTER2</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${AWS}" apply -k "$DEMO_HOME/k8s/backend/app/aws"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wait for the application to be up:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${AWS}" -n hybrid-cloud rollout status deploy/hybrid-cloud-backend-api --timeout=60s</code></pre>
+</div>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset1_azure">
+<div class="paragraph">
+<p>If you <code>CLUSTER-1</code> is <strong>Azure</strong> then,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export AZURE=$CLUSTER1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you <code>CLUSTER-2</code> is <strong>Azure</strong> then,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export AZURE=$CLUSTER2</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${AZURE}" apply -k "$DEMO_HOME/k8s/backend/app/azure"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wait for the application to be up:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${AZURE}" -n hybrid-cloud rollout status deploy/hybrid-cloud-backend-api --timeout=60s</code></pre>
+</div>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset1_civo">
+<div class="paragraph">
+<p>If you <code>CLUSTER-1</code> is <strong>Civo</strong> then,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export CIVO=$CLUSTER1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you <code>CLUSTER-2</code> is <strong>Civo</strong> then,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export CIVO=$CLUSTER2</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${CIVO}" apply -k "$DEMO_HOME/k8s/backend/app/civo"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wait for the application to be up:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${CIVO}" -n hybrid-cloud rollout status deploy/hybrid-cloud-backend-api --timeout=60s</code></pre>
+</div>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset1_gcp">
+<div class="paragraph">
+<p>If you <code>CLUSTER-1</code> is <strong>Google Cloud</strong> then,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export GCP=$CLUSTER1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you <code>CLUSTER-2</code> is <strong>Google Cloud</strong> then,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export GCP=$CLUSTER2</code></pre>
+</div>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="$GCP" apply -k "$DEMO_HOME/k8s/backend/app/gcp"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wait for the application to be up:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${GCP}" -n hybrid-cloud rollout status deploy/hybrid-cloud-backend-api --timeout=60s</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="deploy-frontend"><a class="anchor" href="#deploy-frontend"></a>Frontend API</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The source of the backend API is available <a href="https://github.com/kameshsampath/hybrid-cloud-frontend-api.git">here</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset2_aws"></a>AWS</p>
+</li>
+<li>
+<p><a id="tabset2_azure"></a>Azure</p>
+</li>
+<li>
+<p><a id="tabset2_civo"></a>Civo</p>
+</li>
+<li>
+<p><a id="tabset2_gcp"></a>GCP</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset2_aws">
+<div class="paragraph">
+<p>If you <code>CLUSTER-1</code> is <strong>AWS</strong> then,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export AWS=$CLUSTER1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you <code>CLUSTER-2</code> is <strong>AWS</strong> then,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export AWS=$CLUSTER2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Deploy the database,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${AWS}" apply -k "$DEMO_HOME/k8s/frontend/db"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wait for the application to be up:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${AWS}" -n db rollout status deploy/postgresql --timeout=60s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Deploy the API,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${AWS}" apply -k "$DEMO_HOME/k8s/frontend/app"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wait for the application to be up:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${AWS}" -n hybrid-cloud rollout status deploy/hybrid-cloud-frontend-api --timeout=60s</code></pre>
+</div>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset2_azure">
+<div class="paragraph">
+<p>If you <code>CLUSTER-1</code> is <strong>Azure</strong> then,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export AZURE=$CLUSTER1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you <code>CLUSTER-2</code> is <strong>Azure</strong> then,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export AZURE=$CLUSTER2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Deploy the database,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${AWS}" apply -k "$DEMO_HOME/k8s/frontend/db"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wait for the application to be up:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${AWS}" -n db rollout status deploy/postgresql --timeout=60s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Deploy the API,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${AWS}" apply -k "$DEMO_HOME/k8s/frontend/app"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wait for the application to be up:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${AWS}" -n hybrid-cloud rollout status deploy/hybrid-cloud-frontend-api --timeout=60s</code></pre>
+</div>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset2_civo">
+<div class="paragraph">
+<p>If you <code>CLUSTER-1</code> is <strong>Civo</strong> then,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export CIVO=$CLUSTER1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you <code>CLUSTER-2</code> is <strong>Civo</strong> then,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export CIVO=$CLUSTER2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Deploy the database,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${AWS}" apply -k "$DEMO_HOME/k8s/frontend/db"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wait for the application to be up:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${AWS}" -n db rollout status deploy/postgresql --timeout=60s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Deploy the API,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${AWS}" apply -k "$DEMO_HOME/k8s/frontend/app"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wait for the application to be up:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${AWS}" -n hybrid-cloud rollout status deploy/hybrid-cloud-frontend-api --timeout=60s</code></pre>
+</div>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset2_gcp">
+<div class="paragraph">
+<p>If you <code>CLUSTER-1</code> is <strong>Google Cloud</strong> then,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export GCP=$CLUSTER1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you <code>CLUSTER-2</code> is <strong>Google Cloud</strong> then,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export GCP=$CLUSTER2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Deploy the database,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${GCP}" apply -k "$DEMO_HOME/k8s/frontend/db"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wait for the application to be up:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${GCP}" -n db rollout status deploy/postgresql --timeout=60s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Deploy the API,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${GCP}" apply -k "$DEMO_HOME/k8s/frontend/app"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wait for the application to be up:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${GCP}" -n hybrid-cloud rollout status deploy/hybrid-cloud-frontend-api --timeout=60s</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="deploy-virtual-gateway"><a class="anchor" href="#deploy-virtual-gateway"></a>Virtual Gateway</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to access the servies we need to configure mesh gateway,</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl --context="${MGMT}" apply \
+  -f <a href="https://github.com/kameshsampath/solo-hybrid-cloud-demo/blob/gloo-mesh/apps/frontend/gloo/virtual-gateway.yaml" target="_blank" rel="noopener">"$DEMO_HOME/k8s/frontend/gloo/virtual-gateway.yaml"</a></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="deploy-ui"><a class="anchor" href="#deploy-ui"></a>Frontend UI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The UI is a react js based Single Page Application which allows users to interact with the API.Clone the repository as shown:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mkdir -p $DEMO_HOME/work
+cd $DEMO_HOME/work
+git clone <a href="https://github.com/kameshsampath/hybrid-cloud-ui.git" class="bare">https://github.com/kameshsampath/hybrid-cloud-ui.git</a> hybrid-cloud-ui
+cd hybrid-cloud-ui</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>_TODO</em> Frontend app</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="setup_mesh.html" class="query-params-link">Setup</a></span>
+</nav>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <a class="rhd-logo" href="https://developers.redhat.com" target="_blank"></div>
+</footer>
+<script src="../../../_/js/vendor/clipboard.js"></script>
+<script src="../../../_/js/site.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
