@@ -1,6 +1,6 @@
 name: hybrid-cloud-demo
 title: Gloo Hybrid Cloud Demo
-version: master
+version: gloo-mesh
 nav:
   - modules/ROOT/nav.adoc
 
