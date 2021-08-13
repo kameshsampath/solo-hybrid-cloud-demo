@@ -8,12 +8,23 @@ site:
 
 content:
   sources:
-    - url: ./
+    - url: https://github.com/kameshsampath/solo-hybrid-cloud-demo.git
+      branches:
+        - gloo-edge
+        - gloo-mesh
       start_path: documentation
 
 asciidoc:
   attributes:
-    release-version: master
+    kubernetes-version: v1.21.0
+    # gloo-edge
+    gloo-edge: true
+    gloo-edge-version: v1.8.6
+    gloo-edge-ee-version: v1.8.6
+    # gloo-mesh
+    gloo-mesh: true
+    gloo-mesh-version: v1.1.0-beta34
+    gloo-mesh-ee-version: v1.1.0-beta29
     page-pagination: true
   extensions:
     - ./lib/tab-block.js

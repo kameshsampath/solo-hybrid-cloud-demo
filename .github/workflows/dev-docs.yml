@@ -1,9 +1,10 @@
-name: Dev Docs
+name: Docs
 
 on:
   push:
     branches:
-      - main
+      - gloo-edge
+      - gloo-mesh
 env:
   SITE_DIR: "gh-pages"
 jobs:
