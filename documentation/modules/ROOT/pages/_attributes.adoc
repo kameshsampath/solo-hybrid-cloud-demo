@@ -1,6 +1,7 @@
 :experimental:
 :icons: font
 :moduledir: ..
+:branch: gloo-mesh
 :github-repo: https://github.com/kameshsampath/solo-hybrid-cloud-demo/blob/{branch}
 :mesh-repo: mesh
 :edge-repo: edge
