@@ -1,0 +1,26 @@
+apiVersion: networking.enterprise.mesh.gloo.solo.io/v1beta1
+kind: VirtualHost
+metadata:
+  name: hybrid-cloud-frontend
+spec:
+  virtualHost:
+    domains:
+      - "*"
+    routes:
+      - matchers:
+          - uri:
+              prefix: /
+        name: hybrid-cloud-frontend-api
+        routeAction:
+          destinations:
+            # span across all clouds
+            - kubeService:
+                clusterName: cluster-1
+                name: hybrid-cloud-frontend-api
+                namespace: hybrid-cloud
+            - kubeService:
+                clusterName: cluster-2
+                name: hybrid-cloud-frontend-api
+                namespace: hybrid-cloud
+        options:
+          prefixRewrite: /v1/api/

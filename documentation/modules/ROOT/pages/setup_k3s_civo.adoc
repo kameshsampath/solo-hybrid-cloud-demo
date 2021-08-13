@@ -1,0 +1,67 @@
+= Kubernetes Cluster on Civo Cloud
+include::../pages/_attributes.adoc[]
+
+[#pre-req]
+== Pre-requisites
+
+* A https://civo.com[Civo] account
+* Download the https://github.com/civo/cli[civo cli^]
+* Ensure that you have https://www.civo.com/api[CIVO API] token
+
+Navigate to Civo Cloud setup folder `{cluster-civo-repo}`:
+
+[#civo-nav-folder]
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+cd $TUTORIAL_HOME/{cluster-civo-repo}
+----
+
+[NOTE]
+====
+Adjust link:{github-repo}/{cluster-civo-repo}/terrraform.tfvars[terrraform.tfvars^] as per your cluster needs.
+====
+
+[#civo-terraform-variables]
+== Terraform Variables
+
+[cols="h,s", options="header"]
+|===
+| Variable | Description
+
+| gloo_clusters 
+| The Civo Kubernetes cluster(s) configuration 
+|===
+
+An example `gloo_clusters` value:
+
+[source,terraform]
+----
+gloo_clusters = {
+	gm-mgmt : {#<.>
+	region            = "LON1"#<.>
+	target_nodes_size = "g3.k3s.large"#<.>
+	num_nodes         = 1#<.>
+	role              = "management"#<.>
+	apps              = ["-Traefik"]#<.>
+}
+----
+<.> The cluster name, this will be the name of the kubernetes cluster
+<.> The region where cluster will be created
+<.> The number of Kubernetes worker nodes for the cluster
+<.> The role of the cluster, this matches to xref:setup.adoc#cloud-and-components[Cloud and Components]
+<.> The applications to add/remove
+
+Create the cloud by running, 
+
+[.console-input]
+[source,bash]
+----
+terraform init
+terraform apply
+----
+
+[.console-output]
+[source,bash]
+----
+----

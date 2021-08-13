@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hybrid-cloud-ui
+spec:
+  selector:
+    matchLabels:
+      app: hybrid-cloud-ui
+  template:
+    metadata:
+      labels:
+        app: hybrid-cloud-ui
+    spec:
+      containers:
+        - name: hybrid-cloud-ui
+          image: ghcr.io/kameshsampath/hybrid-cloud-ui
+          resources:
+            limits:
+              cpu: "100m"
+              memory: "200Mi"
+            requests:
+              cpu: "50m"
+              memory: "100Mi"
+          ports:
+            - containerPort: 8080

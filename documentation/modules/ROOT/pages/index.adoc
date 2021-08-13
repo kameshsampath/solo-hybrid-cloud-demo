@@ -1,11 +1,11 @@
-= Welcome to Template Tutorial
+= Welcome to Gloo Hybrid Cloud Demo
 :page-layout: home
 :!sectids:
 
 [.text-center.strong]
 == Gloo Hybrid Cloud Demo
 
-A hybrid cloud deployment, that demonstrates how to use Gloo Edge with Istio based microservices. The demo shows how Gloo helps in:
+A hybrid cloud deployment, that demonstrates how to use Gloo Mesh or Gloo Edge with Istio based microservices. The demo shows how Gloo helps in:
 
 - Providing gateway to API 
 - Do rate limiting

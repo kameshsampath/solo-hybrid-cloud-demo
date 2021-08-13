@@ -1,0 +1,10 @@
+:experimental:
+:icons: font
+:github-repo: https://github.com/kameshsampath/solo-hybrid-cloud-demo/blob/{branch}
+:mesh-repo: mesh
+:edge-repo: edge
+:setup-config-repo: setup/config/mesh
+:apps-repo: apps
+:source-highlighter: highlightjs
+
+:gloo-mesh-namespace: gloo-mesh

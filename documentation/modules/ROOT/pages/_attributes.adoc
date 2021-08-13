@@ -1,2 +1,12 @@
 :experimental:
+:icons: font
+:moduledir: ..
+:github-repo: https://github.com/kameshsampath/solo-hybrid-cloud-demo/blob/{branch}
+:mesh-repo: mesh
+:edge-repo: edge
+:cluster-setup-repo: setup/cluster
 :source-highlighter: highlightjs
+:cluster-civo-repo: {cluster-setup-repo}/civo
+:cluster-aws-repo: {cluster-setup-repo}/aws
+:cluster-azure-repo: {cluster-setup-repo}/azure
+:cluster-gke-repo: {cluster-setup-repo}/gke

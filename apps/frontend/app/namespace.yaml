@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hybrid-cloud
+  labels:
+    istio-injection: enabled
+    # TODO add revision label

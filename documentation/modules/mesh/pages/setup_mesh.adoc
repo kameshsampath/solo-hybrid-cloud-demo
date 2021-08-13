@@ -1,0 +1,273 @@
+= Setup Gloo Mesh and Components
+include::_attributes.adoc[]
+
+At the end of this chapter you would have 
+
+* Installed Gloo Mesh Enterprise
+* Registered Clusters
+* Installed Istio on to mesh clusters
+* Created Virtual Mesh
+
+== Pre-requsites
+
+* You have setup three Kubernetes clusters one for each Management and two meshes
+* You Gloo Mesh Enterprise license key
+
+[#mesh-environment-variables]
+== Environment variables
+
+include::mesh:partial$cluster-env.adoc[leveloffset=+1,tags="cluster-env"]
+
+[#install-mesh]
+== Install Gloo Mesh
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+meshctl install enterprise \
+  --include-rbac \
+  --license pass:[$GLOO_MESH_LICENSE_KEY] \
+  --kubecontext pass:[$MGMT]
+  --version {gloo-mesh-ee-version}
+----
+
+Wait for enterprise networking to be ready
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context pass:["${MGMT}"] \
+  -n {gloo-mesh-namespace} rollout status deploy/enterprise-networking
+----
+
+[.console-output]
+[source,bash]
+----
+"Hello World"
+----
+
+[#register-clusters]
+== Cluster Registrations
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+export MGMT_INGRESS_ADDRESS=$(kubectl --context=pass:[$MGMT] get svc -n {gloo-mesh-namespace} enterprise-networking -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+----
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+export MGMT_INGRESS_PORT=$(kubectl --context=pass:[$MGMT] -n {gloo-mesh-namespace} get service enterprise-networking -o jsonpath='{.spec.ports[?(@.name=="grpc")].port}')
+----
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+export RELAY_ADDRESS=pass:["${MGMT_INGRESS_ADDRESS}:${MGMT_INGRESS_PORT}"]
+----
+
+[#register-cluster-1]
+=== Cluster 1
+
+Set a name for the cluster that is to be registered:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+export CLUSTER_NAME='cluster-1'
+----
+
+Register it,
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+meshctl cluster register enterprise --mgmt-context=pass:["$MGMT"] \
+  --remote-context=pass:["$CLUSTER1"] \
+  --relay-server-address pass:["$RELAY_ADDRESS"] \
+  pass:["$CLUSTER_NAME"] \
+  --cluster-domain cluster.local
+----
+
+[.console-output]
+[source,bash]
+----
+"Hello World"
+----
+
+=== Cluster 2
+
+Set a name for the cluster that is to be registered:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+export CLUSTER_NAME='cluster-2'
+----
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+meshctl cluster register enterprise --mgmt-context=pass:["$MGMT"] \
+  --remote-context=pass:["$CLUSTER2"] \
+  --relay-server-address pass:["$RELAY_ADDRESS"] \
+  pass:["$CLUSTER_NAME"] \
+  --cluster-domain cluster.local
+----
+
+[.console-output]
+[source,bash]
+----
+"Hello World"
+----
+
+Check the status of the agents 
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+meshctl check server
+----
+
+[.console-output]
+[source,bash]
+----
+Gloo Mesh Management Cluster Installation
+--------------------------------------------
+
+🟢 Gloo Mesh Pods Status
++-----------+------------+-------------------------------+-----------------+
+|  CLUSTER  | REGISTERED | DASHBOARDS AND AGENTS PULLING | AGENTS PUSHING  |
++-----------+------------+-------------------------------+-----------------+
+| cluster-1 | true       |                             2 |               1 |
++-----------+------------+-------------------------------+-----------------+
+| cluster-2 | true       |                             2 |               1 |
++-----------+------------+-------------------------------+-----------------+
+
+🟢 Gloo Mesh Agents Connectivity
+
+Management Configuration
+---------------------------
+2021-08-12T10:22:53.791937Z     info    klog    apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+
+🟢 Gloo Mesh CRD Versions
+
+🟢 Gloo Mesh Networking Configuration Resources
+----
+
+[#install-istio]
+== Install Istio 
+
+Install Istio on to the cluster `cluster-1`:
+
+[.console-input]
+[source,bash,subs="macros,+attributes"]
+----
+istioctl --context $CLUSTER1 operator init
+CLUSTER_NAME='cluster-1' envsubst < link:{github-repo}/{setup-config-repo}/istio-cr.yaml[$DEMO_HOME/config/istio-cr.yaml^] | istioctl manifest install -y --context $CLUSTER1 -f -
+----
+
+Check and verify the install:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+istioctl verify-install --context=$CLUSTER1
+----
+
+Install Istio on to the cluster `cluster-2`:
+
+[.console-input]
+[source,bash,subs="macros,+attributes"]
+----
+istioctl --context $CLUSTER2 operator init
+CLUSTER_NAME='cluster-2' envsubst < link:{github-repo}/{setup-config-repo}/istio-cr.yaml[$DEMO_HOME/config/istio-cr.yaml^] | istioctl manifest install -y --context $CLUSTER2 -f -
+----
+
+Check and verify the install:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+istioctl verify-install --context=pass:[$CLUSTER2]
+----
+
+After setup steps, the mesh dashboard should look like,
+
+image::cluster_reg_success.png[Mesh Dashboard]
+
+[#update-admin-role]
+== Update `admin-role`
+
+Patch the `admin-role` to allow all users of `system:masters` Group (Kube Admins)
+
+[.console-input]
+.link:{github-repo}/{setup-config-repo}/rolebinding-patch.yaml[$DEMO_HOME/config/rolebinding-patch.yaml^]
+[source,bash,subs="macros,+attributes"]
+----
+kubectl --context pass:[${MGMT}] -n {gloo-mesh-namespace} patch rolebindings.rbac.enterprise.mesh.gloo.solo.io admin-role-binding --type=merge --patch "$(cat link:{github-repo}/{setup-config-repo}/rolebinding-patch.yaml[$DEMO_HOME/config/rolebinding-patch.yaml])"
+----
+
+[#enable-mtls]
+== Enable mTLS between clusters
+
+On each mesh cluster where you have installed `istio` run the following manifest to enable `mTLS`,
+
+[.console-input]
+[source,bash,subs="macros,+attributes"]
+----
+kubectl --context=pass:[$CLUSTER1] apply -f link:{github-repo}/{setup-config-repo}/peer-auth.yaml[$DEMO_HOME/config/peer-auth.yaml]
+kubectl --context==pass:[$CLUSTER2] apply -f link:{github-repo}/{setup-config-repo}/peer-auth.yaml[$DEMO_HOME/config/peer-auth.yaml]
+----
+
+[#create-virtual-mesh]
+=== Create Virtual Mesh
+
+[.console-input]
+[source,bash,subs="macros,+attributes"]
+----
+export MESHES=$(kubectl --context=pass:[$MGMT] get meshes -n {gloo-mesh-namespace} -o yaml | yq eval '.items[].metadata|[{"name": .name,"namespace": .namespace}]' -)
+yq eval -P  '.spec.meshes = env(MESHES)' link:{github-repo}/{setup-config-repo}/peer-auth.yaml[$DEMO_HOME/config/virtual-mesh-template.yaml] > $DEMO_HOME/config/virtual-mesh.yaml
+----
+
+[.console-input]
+[source,bash,subs="macros,+attributes"]
+----
+kubectl --context=pass:[$MGMT] apply -f $DEMO_HOME/config/virtual-mesh.yaml
+----
+
+[#check-whats-created]
+== Check what is created so far 
+
+[#meshes]
+=== Meshes
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:[$MGMT] get meshes -n {gloo-mesh-namespace}
+----
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+NAME                            AGE
+istiod-istio-system-cluster-1   6m7s
+istiod-istio-system-cluster-2   3m38s
+----
+
+[#mesh-kube-clusters]
+=== Kubernetes Clusters
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:[$MGMT] get kubernetesclusters -n {gloo-mesh-namespace}
+----
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+NAME        AGE
+cluster-1   15m
+cluster-2   11m
+----

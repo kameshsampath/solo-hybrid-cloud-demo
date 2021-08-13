@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hybrid-cloud-frontend-api
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: hybrid-cloud-frontend-api
+      labels:
+        app: hybrid-cloud-frontend-api
+        version: v1.0
+    spec:
+      containers:
+        - name: frontend
+          image: ghcr.io/kameshsampath/hybrid-cloud-frontend-api
+          imagePullPolicy: Always
+          env:
+            - name: HYBRID_CLOUD_BACKEND_URL
+              value: hybrid-cloud-backend-api.hybrid-cloud.svc.cluster.local:8080
+            - name: GIN_MODE
+              value: "release"
+            - name: POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: hostname
+                  name: pgsql-credentials
+            - name: POSTGRES_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: port
+                  name: pgsql-credentials
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: pgsql-credentials
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: pgsql-credentials
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  key: database
+                  name: pgsql-credentials
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /v1/api/health/live
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /v1/api/health/ready
+          resources:
+            limits:
+              cpu: "100m"
+              memory: "200Mi"
+            requests:
+              cpu: "50m"
+              memory: "100Mi"
+      restartPolicy: Always
+      serviceAccountName: hybrid-cloud-frontend-sa
+  selector:
+    matchLabels:
+      app: hybrid-cloud-frontend-api
+      version: v1.0

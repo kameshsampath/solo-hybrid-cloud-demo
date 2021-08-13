@@ -1,0 +1,310 @@
+= Deploy Applications
+include::_attributes.adoc[]
+
+At the end of this chapter you would have 
+
+* Deployed Backend API 
+* Frontend API
+* Created Virutal Gateway
+
+== Pre-requsites
+
+* You have setup three Kubernetes clusters one for each Management and two meshes
+* You deployed Gloo Mesh on the management cluster
+* You have registered the mesh clusters with management cluster
+* You have Istio installed on the mesh clusters 
+
+[#deploy-env-variables]
+== Environment variables
+
+include::mesh:partial$cluster-env.adoc[leveloffset=+1,tags="cluster-env"]
+
+[#deploy-backend]
+== Backend API
+
+The backend is simple REST API that processes the incoming message and applies some transformations like uppercase, reverse and returns the response with a cloud provider id such as `aws`,`gcp`,'civo','azure'.
+
+[NOTE]
+====
+The source of the backend API is available https://github.com/kameshsampath/hybrid-cloud-backend-api.git[here].
+====
+
+[tabs]
+====
+AWS::
++
+--
+
+include::mesh:partial$cluster-env.adoc[leveloffset=+1,tags="aws-env"]
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${AWS}"] apply -k "$DEMO_HOME/k8s/backend/app/aws"
+----
+
+Wait for the application to be up:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${AWS}"] -n hybrid-cloud rollout status deploy/hybrid-cloud-backend-api --timeout=60s
+----
+--
+Azure::
++
+--
+
+include::mesh:partial$cluster-env.adoc[leveloffset=+1,tags="azure-env"]
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${AZURE}"] apply -k "$DEMO_HOME/k8s/backend/app/azure"
+----
+
+Wait for the application to be up:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${AZURE}"] -n hybrid-cloud rollout status deploy/hybrid-cloud-backend-api --timeout=60s
+----
+--
+Civo::
++
+--
+
+include::mesh:partial$cluster-env.adoc[leveloffset=+1,tags="civo-env"]
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${CIVO}"] apply -k "$DEMO_HOME/k8s/backend/app/civo"
+----
+
+Wait for the application to be up:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${CIVO}"] -n hybrid-cloud rollout status deploy/hybrid-cloud-backend-api --timeout=60s
+----
+--
+GCP::
++
+--
+
+include::mesh:partial$cluster-env.adoc[leveloffset=+1,tags="gcp-env"]
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["$GCP"] apply -k "$DEMO_HOME/k8s/backend/app/gcp"
+----
+
+Wait for the application to be up:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${GCP}"] -n hybrid-cloud rollout status deploy/hybrid-cloud-backend-api --timeout=60s
+----
+--
+====
+
+[#deploy-frontend]
+== Frontend API
+
+[NOTE]
+====
+The source of the backend API is available https://github.com/kameshsampath/hybrid-cloud-frontend-api.git[here].
+====
+
+[tabs]
+====
+AWS::
++
+--
+
+include::mesh:partial$cluster-env.adoc[leveloffset=+1,tags="aws-env"]
+
+Deploy the database,
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${AWS}"] apply -k "$DEMO_HOME/k8s/frontend/db"
+----
+
+Wait for the application to be up:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${AWS}"] -n db rollout status deploy/postgresql --timeout=60s
+----
+
+Deploy the API,
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${AWS}"] apply -k "$DEMO_HOME/k8s/frontend/app"
+----
+
+Wait for the application to be up:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${AWS}"] -n hybrid-cloud rollout status deploy/hybrid-cloud-frontend-api --timeout=60s
+----
+
+--
+Azure::
++
+--
+
+include::mesh:partial$cluster-env.adoc[leveloffset=+1,tags="azure-env"]
+
+Deploy the database,
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${AWS}"] apply -k "$DEMO_HOME/k8s/frontend/db"
+----
+
+Wait for the application to be up:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${AWS}"] -n db rollout status deploy/postgresql --timeout=60s
+----
+
+Deploy the API,
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${AWS}"] apply -k "$DEMO_HOME/k8s/frontend/app"
+----
+
+Wait for the application to be up:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${AWS}"] -n hybrid-cloud rollout status deploy/hybrid-cloud-frontend-api --timeout=60s
+----
+--
+Civo::
++
+--
+
+include::mesh:partial$cluster-env.adoc[leveloffset=+1,tags="civo-env"]
+
+Deploy the database,
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${AWS}"] apply -k "$DEMO_HOME/k8s/frontend/db"
+----
+
+Wait for the application to be up:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${AWS}"] -n db rollout status deploy/postgresql --timeout=60s
+----
+
+Deploy the API,
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${AWS}"] apply -k "$DEMO_HOME/k8s/frontend/app"
+----
+
+Wait for the application to be up:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${AWS}"] -n hybrid-cloud rollout status deploy/hybrid-cloud-frontend-api --timeout=60s
+----
+
+--
+GCP::
++
+--
+
+include::mesh:partial$cluster-env.adoc[leveloffset=+1,tags="gcp-env"]
+
+Deploy the database,
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${GCP}"] apply -k "$DEMO_HOME/k8s/frontend/db"
+----
+
+Wait for the application to be up:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${GCP}"] -n db rollout status deploy/postgresql --timeout=60s
+----
+
+Deploy the API,
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${GCP}"] apply -k "$DEMO_HOME/k8s/frontend/app"
+----
+
+Wait for the application to be up:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${GCP}"] -n hybrid-cloud rollout status deploy/hybrid-cloud-frontend-api --timeout=60s
+----
+--
+====
+
+[#deploy-virtual-gateway]
+==  Virtual Gateway 
+
+In order to access the servies we need to configure mesh gateway, 
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+kubectl --context=pass:["${MGMT}"] apply \
+  -f link:{github-repo}/{apps-repo}/frontend/gloo/virtual-gateway.yaml["$DEMO_HOME/k8s/frontend/gloo/virtual-gateway.yaml"^]
+----
+
+[#deploy-ui]
+== Frontend UI
+
+The UI is a react js based Single Page Application which allows users to interact with the API.Clone the repository as shown:
+
+:tutorial-url: https://github.com/kameshsampath/hybrid-cloud-ui.git
+:folder: hybrid-cloud-ui
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+mkdir -p $DEMO_HOME/work
+cd $DEMO_HOME/work
+git clone {tutorial-url} {folder}
+cd hybrid-cloud-ui
+----
+
+__TODO_ Frontend app

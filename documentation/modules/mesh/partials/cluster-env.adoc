@@ -1,0 +1,97 @@
+# tag::cluster-env[]
+
+For a easier and smoother setup, lets define few environment variables that we will refer in the upcoming sections and chapters.
+
+[.console-input]
+[source,bash,subs="macros+,+attributes"]
+----
+export GLOO_MESH_LICENSE_KEY=<your gloo mesh enterprise license key>#<.>
+export MGMT=<your management server name>#<.>
+export CLUSTER1=<your mesh with istio cluster 1>#<.>
+export CLUSTER2=<your mesh with istio cluster 2>#<.>
+----
+<.> The Gloo Mesh License Key
+<.> The Kubenretes cluster which will be used Gloo Management Cluster
+<.> The Kubenretes cluster which will be used Gloo Mesh Cluster i.e. where workload will be deployed
+<.> The Kubenretes cluster which will be used Gloo Mesh Cluster i.e. where workload will be deployed
+
+[NOTE]
+====
+The cluster mapping are done based on xref:ROOT:setup.adoc#cloud-and-components[Cloud Components]. Adjust as per your cluster setup.
+====
+
+# end::cluster-env[]
+
+# tag::aws-env[]
+
+If you `CLUSTER-1` is *AWS* then,
+
+[.console-input]
+[source,bash,subs="macros,+attributes"]
+----
+export AWS=pass:[$CLUSTER1]
+----
+
+If you `CLUSTER-2` is *AWS* then,
+
+[.console-input]
+[source,bash,subs="macros,+attributes"]
+----
+export AWS=pass:[$CLUSTER2]
+----
+# end::aws-env[]
+
+# tag::azure-env[]
+If you `CLUSTER-1` is *Azure* then,
+
+[.console-input]
+[source,bash,subs="macros,+attributes"]
+----
+export AZURE=pass:[$CLUSTER1]
+----
+
+If you `CLUSTER-2` is *Azure* then,
+
+[.console-input]
+[source,bash,subs="macros,+attributes"]
+----
+export AZURE=pass:[$CLUSTER2]
+----
+# end::azure-env[]
+
+# tag::civo-env[]
+If you `CLUSTER-1` is *Civo* then,
+
+[.console-input]
+[source,bash,subs="macros,+attributes"]
+----
+export CIVO=pass:[$CLUSTER1]
+----
+
+If you `CLUSTER-2` is *Civo* then,
+
+[.console-input]
+[source,bash,subs="macros,+attributes"]
+----
+export CIVO=pass:[$CLUSTER2]
+----
+# end::civo-env[]
+
+# tag::gcp-env[]
+
+If you `CLUSTER-1` is *Google Cloud* then,
+
+[.console-input]
+[source,bash,subs="macros,+attributes"]
+----
+export GCP=pass:[$CLUSTER1]
+----
+
+If you `CLUSTER-2` is *Google Cloud* then,
+
+[.console-input]
+[source,bash,subs="macros,+attributes"]
+----
+export GCP=pass:[$CLUSTER2]
+----
+# end::gcp-env[]

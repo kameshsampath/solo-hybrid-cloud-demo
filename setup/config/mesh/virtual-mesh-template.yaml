@@ -1,0 +1,16 @@
+apiVersion: networking.mesh.gloo.solo.io/v1
+kind: VirtualMesh
+metadata:
+  name: virtual-mesh
+  namespace: gloo-mesh
+spec:
+  mtlsConfig:
+    autoRestartPods: true
+    shared:
+      rootCertificateAuthority:
+        generated: {}
+  federation:
+    selectors:
+      - {}
+  #kubectl --context=$MGMT get meshes -n gloo-mesh -o yaml | yq eval '.items[].metadata.name|[{"name":.,"namespace":"gloo-mesh"}]' -
+  meshes: []

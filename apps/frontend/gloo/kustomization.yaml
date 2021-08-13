@@ -1,0 +1,4 @@
+namespace: gloo-mesh
+resources:
+  - 01-virtual-host.yaml
+  - 02-virtual-gateway.yaml
