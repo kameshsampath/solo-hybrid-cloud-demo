@@ -9,7 +9,9 @@ site:
 content:
   sources:
     - url: .
-      branches: HEAD
+      branches:
+        - HEAD
+        - gloo-edge
       start_path: documentation
 asciidoc:
   attributes:

@@ -26,7 +26,7 @@ validate:	format
 
 .PHONY:	apply
 apply:	validate
-	terraform apply
+	terraform apply -var-file="$(TFVARS_FILE)"
 
 .PHONY:	destroy
 destroy:
