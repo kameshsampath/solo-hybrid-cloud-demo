@@ -1,0 +1,6 @@
+[submodule "setup/cluster/gcp"]
+	path = setup/cluster/gcp
+	url = git@github.com:kameshsampath/gloo-demos-terraform-gke.git
+[submodule "setup/cluster/civo"]
+	path = setup/cluster/civo
+	url = git@github.com:kameshsampath/gloo-demos-terraform-civo.git
