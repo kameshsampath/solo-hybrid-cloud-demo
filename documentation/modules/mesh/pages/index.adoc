@@ -1,3 +1,32 @@
 = Gloo Mesh
 
-WIP
+As part of the demo we will setup three Kubernetes clusters which will be connected using https://docs.solo.io/gloo-mesh/latest/[GLoo Mesh]. The demo will leverage the Gloo Mesh custom resources to demonstrate features like:
+
+- Cloud Burst
+- Rate Limiting
+- Failover etc.,
+
+[#cloud-and-components]
+== Clouds-Component Matrix
+
+Assuming that we have GKE as `cloud-1`, EKS as `cloud-2` and Civo as `cloud-3`, the following table shows the cloud and what demo components gets installed on each of them.
+
+[NOTE]
+====
+Its not a hard constraint on the cloud components, you can adjust the way you want them to be. But for the rest of the modules/chapters we will assume the below mentioned component matrix.
+====
+
+
+:cloud-1: AWS
+:cloud-2: GKE
+:cloud-3: CIVO
+[cols="<2,^1,^1,^1", options="header"]
+|===
+| Component | Cloud-1  |  Cloud-2 | Cloud-3
+| Cloud Provider  | {cloud-1}  |  {cloud-2} | {cloud-3}
+| Gloo Mesh Role  | Management  |  Mesh | Mesh
+| Istio     | &#x274C;  | &#x2713;  | &#x2713;
+| Backend API  | &#x274C;  | &#x2713;  | &#x2713;
+| Frontend API | &#x274C;  | &#x2713;  | &#x2713;
+| Frontend UI        | &#x2713;  | &#x274C; | &#x274C;
+|===

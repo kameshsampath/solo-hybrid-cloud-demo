@@ -88,3 +88,7 @@ override.tf.json
 # example: *tfplan*
 .env*
 !.env.example
+
+.kube/**
+!.kube
+!.kube/.gitkeep

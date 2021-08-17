@@ -77,55 +77,14 @@ Although they are used in the tutorial, you could use others without any problem
 |===
 
 [#k8s]
-== Setup Kubernetes
+== Kubernetes Clusters
 
 We need three Kubernetes clusters to run this demo, we could have Kubernetes clusters via:
 
-- https://aws.amazon.com/eks[EKS]
-- https://cloud.google.com/kubernetes-engine[GKE]
-- https://azure.microsoft.com/en-in/services/kubernetes-service/[AKS]
-- http://try.openshift.com[OpenShift]
-- https://civo.com[Civo]
+- https://aws.amazon.com/eks[EKS^]
+- https://cloud.google.com/kubernetes-engine[GKE^]
+- https://azure.microsoft.com/en-in/services/kubernetes-service/[AKS^]
+- http://try.openshift.com[OpenShift^]
+- https://civo.com[Civo^]
 
 Once we have three kubernetes clusters ready, we are good to start setting up the demo.
-
-[#cloud-and-components]
-=== Clouds and Components
-
-Assuming that we have GKE as `cloud-1`, EKS as `cloud-2` and AKS as `cloud-3`, the following table shows the cloud and what components gets installed on each of them.
-
-:cloud-1: AWS
-:cloud-2: GKE
-:cloud-3: CIVO
-[cols="<2,^1,^1,^1", options="header"]
-|===
-| Component | Cloud-1  |  Cloud-2 | Cloud-3
-| Cloud Provider  | {cloud-1}  |  {cloud-2} | {cloud-3}
-| Gloo Mesh Role  | Management  |  Mesh | Mesh
-| Istio     | &#x274C;  | &#x2713;  | &#x2713;
-| Backend API  | &#x274C;  | &#x2713;  | &#x2713;
-| Frontend API | &#x274C;  | &#x2713;  | &#x2713;
-| Frontend UI        | &#x2713;  | &#x274C; | &#x274C;
-|===
-
-
-[#download-tutorial]
-== Download Sources
-
-The demo base repository is where the setup scripts and documentation are located. Clone the repository as shown:
-
-:tutorial-url: https://github.com/kameshsampath/solo-hybrid-cloud-demo.git
-:folder: solo-hybrid-cloud-demo
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
-----
-git clone {tutorial-url} {folder}
-----
-
-This demo sources folder will be referenced as `$DEMO_HOME`. As a convineince lets export it to a environment variable,
-
-[.console-input]
-[source,bash]
-----
-export DEMO_HOME="$(pwd)/solo-hybrid-cloud-demo"
-----

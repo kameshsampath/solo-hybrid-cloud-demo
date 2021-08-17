@@ -4,9 +4,9 @@ include::../pages/_attributes.adoc[]
 [#pre-req]
 == Pre-requisites
 
-* A https://civo.com[Civo] account
+* A https://civo.com[Civo^] cloud account
 * Download the https://github.com/civo/cli[civo cli^]
-* Ensure that you have https://www.civo.com/api[CIVO API] token
+* Ensure that you have https://www.civo.com/api[CIVO API^] token
 
 Navigate to Civo Cloud setup folder `{cluster-civo-repo}`:
 
@@ -14,7 +14,7 @@ Navigate to Civo Cloud setup folder `{cluster-civo-repo}`:
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-cd $TUTORIAL_HOME/{cluster-civo-repo}
+cd $DEMO_HOME/{cluster-civo-repo}
 ----
 
 [NOTE]
@@ -23,18 +23,48 @@ Adjust link:{github-repo}/{cluster-civo-repo}/terrraform.tfvars[terrraform.tfvar
 ====
 
 [#civo-terraform-variables]
-== Terraform Variables
+== Terraform Variable
 
-[cols="h,s", options="header"]
+The cluster creation is configured using map `gloo_clusters` that supports the following keys:
+
+[cols="^1s,^3,^1m", options="header"]
 |===
-| Variable | Description
+| Variable | Description | Default Value
 
-| gloo_clusters 
-| The Civo Kubernetes cluster(s) configuration 
+| region 
+a| The region where to create the cluster
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+civo regions ls
+----
+|
+
+| target_nodes_size
+a| The size of each node the cluster,
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+civo k3s size ls
+----
+It is recommened to use `g3.k3s.large`.
+| 
+
+| num_nodes
+| The number of nodes that will be part of the cluster
+| 3
+
+| role
+| The role of the cluster in gloo deployment management, workload etc.,
+|
+
+| apps
+| The apps to add remove from the created cluster.
+| ["-Traefik"]
+
 |===
 
-An example `gloo_clusters` value:
-
+.An example gloo-clusters
 [source,terraform]
 ----
 gloo_clusters = {
@@ -49,19 +79,52 @@ gloo_clusters = {
 <.> The cluster name, this will be the name of the kubernetes cluster
 <.> The region where cluster will be created
 <.> The number of Kubernetes worker nodes for the cluster
-<.> The role of the cluster, this matches to xref:setup.adoc#cloud-and-components[Cloud and Components]
+<.> The role of the cluster, this matches to xref:mesh:index.adoc#cloud-and-components[Cloud and Components]
 <.> The applications to add/remove
+
+[#civo-deploy-clusters]
+== Deploy Clusters
 
 Create the cloud by running, 
 
 [.console-input]
-[source,bash]
+[source,bash,subs="attributes+,+macros"]
 ----
-terraform init
-terraform apply
+make init apply
 ----
 
-[.console-output]
-[source,bash]
+The successfuly terraform command will output the created cluster and its corresponding kubeconfig.
+
+[#civo-save-kubeconfig]
+== Get Kubernetes Cluster Credentials
+
+You can either save the kubeconfig file form the terraform output or run the following commands for each created cluster to save the kubeconfig,
+
+Get the list of created clusters,
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
 ----
+civo k3s ls
 ----
+
+Save the cluster kubeconfig to default `~/.kube/config`,
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+civo k3s config <cluster-name> --save --merge#<.>
+----
+<.> Where the `cluster-name` is the value from the `civo k3s ls` command
+
+[TIP]
+====
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+terraform output -json \
+  | jq '.gloo_clusters_info.value[]' \
+  | sed 's/\\n/\n/g' > $DEMO_HOME/.kube/config
+----
+Then use `export KUBECONFIG=$DEMO_HOME/.kube/config`
+====
